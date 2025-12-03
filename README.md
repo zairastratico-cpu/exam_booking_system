@@ -182,62 +182,7 @@ git clone <repository-url>
 cd exam-booking-system/backend
 ```
 
-2. **Configurazione database**
-
-Modifica `src/main/resources/application.properties`:
-
-```properties
-# Database Configuration (esempio PostgreSQL - adattare al DB scelto)
-spring.datasource.url=jdbc:postgresql://localhost:5432/exam_booking
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-spring.datasource.driver-class-name=org.postgresql.Driver
-
-# JPA Configuration
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-
-# Server Configuration
-server.port=8080
-
-# CORS Configuration
-cors.allowed-origins=http://localhost:3000
-```
-
-3. **Crea database**
-```sql
-CREATE DATABASE exam_booking;
-```
-
-4. **Build e avvio**
-```bash
-mvn clean install
-mvn spring-boot:run
-```
-
-Il backend sarà disponibile su `http://localhost:8080`
-
-### Frontend Setup
-
-1. **Naviga nella directory frontend**
-```bash
-cd ../frontend
-```
-
-2. **Installa dipendenze**
-```bash
-npm install
-```
-
-3. **Configura API endpoint**
-
-Crea/modifica `src/config.js`:
-```javascript
-export const API_BASE_URL = 'http://localhost:8080/api';
-```
-
-4. **Avvio applicazione**
+2. **Avvio applicazione**
 ```bash
 npm start
 ```
@@ -434,48 +379,5 @@ public Prenotazione creaPrenotazione(PrenotazioneRequest request) {
 4. **Visualizza Prenotazioni** (`/admin/esami/:id/prenotazioni`)
    - Lista completa prenotati
    - Export CSV (opzionale)
-
-## 🚢 Deployment
-
-### Backend (Production)
-
-1. **Build JAR**
-```bash
-mvn clean package -DskipTests
-```
-
-2. **Variabili ambiente**
-```bash
-export SPRING_DATASOURCE_URL=jdbc:postgresql://prod-db:5432/exam_booking  # Adattare al DB scelto
-export SPRING_DATASOURCE_USERNAME=prod_user
-export SPRING_DATASOURCE_PASSWORD=secure_password
-```
-
-3. **Avvio**
-```bash
-java -jar target/exam-booking-0.0.1-SNAPSHOT.jar
-```
-
-### Frontend (Production)
-
-1. **Build**
-```bash
-npm run build
-```
-
-2. **Deploy** su hosting statico (Netlify, Vercel, AWS S3, etc.)
-
-## 📝 Roadmap
-
-- [ ] Implementazione autenticazione JWT per admin
-- [ ] Export CSV lista prenotazioni
-- [ ] Filtri e ricerca esami (per data, nome, stato)
-- [ ] Paginazione per liste lunghe
-- [ ] Validazione lato server più robusta
-- [ ] Logging e monitoring
-- [ ] Unit test completi (backend e frontend)
-- [ ] Documentazione API con Swagger/OpenAPI
-
----
 
 **Sviluppato con ☕ e ⚛️**
