@@ -1,4 +1,4 @@
 package zairastratico.be_exam_booking_system.payloads;
 
-public record Booking_response_DTO() {
+public class ExamResponseDTO {
 }
