@@ -1,4 +1,4 @@
-package zairastratico.be_exam_booking_system.secutiy;
+package zairastratico.be_exam_booking_system.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -55,8 +55,8 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
         String method = request.getMethod();
 
         return path.startsWith("/login") ||
-                (path.equals("/exams") && "GET".equalsIgnoreCase(method)) ||
-                (path.equals("/booking") && "POST".equalsIgnoreCase(method));
+                (path.equals("/exams/available") && "GET".equalsIgnoreCase(method)) ||
+                (path.equals("/bookings") && "POST".equalsIgnoreCase(method));
     }
 
 }

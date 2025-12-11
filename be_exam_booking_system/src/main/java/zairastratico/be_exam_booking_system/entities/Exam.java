@@ -29,9 +29,6 @@ public class Exam {
     @Column(nullable = false)
     private String name;
 
-    @Column(length = 1000)
-    private String description;
-
     @NotNull(message = "Date is required")
     @Column(nullable = false)
     private LocalDate date;
@@ -58,14 +55,12 @@ public class Exam {
     @JoinColumn(name = "user_id", nullable = false)
     private User admin;
 
-    public Exam(String name, String description, LocalDate date, LocalTime time, Integer maxNumb, User admin) {
+    public Exam(String name, LocalDate date, LocalTime time, Integer maxNumb, User admin) {
         this.name = name;
-        this.description = description;
         this.date = date;
         this.time = time;
         this.maxNumb = maxNumb;
         this.availableNumb = maxNumb;
-        this.status = Status.DISPONIBILE;
         this.admin = admin;
     }
 }

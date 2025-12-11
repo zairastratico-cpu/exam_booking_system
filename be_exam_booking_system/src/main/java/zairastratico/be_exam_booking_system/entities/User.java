@@ -26,10 +26,6 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "Surname is required")
-    @Column(nullable = false)
-    private String surname;
-
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
     @Column(nullable = false, unique = true)
@@ -38,9 +34,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    public User(String name, String surname, String email, String password) {
+    public User(String name, String email, String password) {
         this.name = name;
-        this.surname = surname;
         this.email = email;
         this.password = password;
     }

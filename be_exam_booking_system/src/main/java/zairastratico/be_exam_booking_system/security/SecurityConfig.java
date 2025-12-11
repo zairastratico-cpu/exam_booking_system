@@ -1,4 +1,4 @@
-package zairastratico.be_exam_booking_system.secutiy;
+package zairastratico.be_exam_booking_system.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -40,8 +40,8 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(authorized->authorized
                 .requestMatchers("/login").permitAll()
-                .requestMatchers(HttpMethod.GET, "/exams").permitAll()
-                .requestMatchers(HttpMethod.POST, "/booking").permitAll()
+                .requestMatchers(HttpMethod.GET, "/exams/available").permitAll()
+                .requestMatchers(HttpMethod.POST, "/bookings").permitAll()
                 .anyRequest().authenticated()
     );
 
@@ -61,6 +61,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

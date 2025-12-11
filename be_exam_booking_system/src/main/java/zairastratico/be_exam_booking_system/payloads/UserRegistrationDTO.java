@@ -7,9 +7,6 @@ public record UserRegistrationDTO(
         @NotBlank(message = "Name is required")
         String name,
 
-        @NotBlank(message = "Surname is required")
-        String surname,
-
         @Email(message = "Invalid email format")
         @NotBlank(message = "Email is required")
         String email,
