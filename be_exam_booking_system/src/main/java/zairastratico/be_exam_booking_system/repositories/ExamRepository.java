@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import zairastratico.be_exam_booking_system.entities.Exam;
 import zairastratico.be_exam_booking_system.entities.enums.Status;
+import zairastratico.be_exam_booking_system.entities.enums.TimeSlot;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,9 +15,11 @@ import java.util.Optional;
 @Repository
 public interface ExamRepository extends JpaRepository<Exam, Long> {
 
-    Optional<Exam> findByNameIgnoreCase(String name);
-
     Page<Exam> findAll(Pageable pageable);
+
+    Page<Exam> findByNameIgnoreCase(String name, Pageable pageable);
+    
+    Page<Exam> findByTimeSlot(TimeSlot timeSlot, Pageable pageable);
 
     Page<Exam> findByStatus(Status status, Pageable pageable);
 
