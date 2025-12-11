@@ -26,11 +26,8 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JWTCheckerFilter jwtCheckerFilter;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JWTCheckerFilter jwtCheckerFilter) throws Exception {
 
         httpSecurity.formLogin(formLogin ->formLogin.disable());
         httpSecurity.csrf(csrf->csrf.disable());

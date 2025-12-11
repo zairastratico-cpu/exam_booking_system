@@ -10,16 +10,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import zairastratico.be_exam_booking_system.entities.User;
 import zairastratico.be_exam_booking_system.exceptions.UnauthorizedException;
+import zairastratico.be_exam_booking_system.services.UserService;
 import zairastratico.be_exam_booking_system.tools.JWTTools;
 
 import java.io.IOException;
-import java.util.Collections;
 
 @Component
 public class JWTCheckerFilter extends OncePerRequestFilter {
     @Autowired
     private JWTTools jwtTools;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -34,17 +38,24 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
 
         String accessToken = authHeader.substring(7);
 
-        jwtTools.verifyToken(accessToken);
+        try {
+            jwtTools.verifyToken(accessToken);
 
-        String userId = jwtTools.extractId(accessToken);
+            String userIdStr = jwtTools.extractId(accessToken);
+            Long userId = Long.parseLong(userIdStr);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userId,
-                null,
-                Collections.emptyList()
-        );
+            User authorizedUser = userService.findUserById(userId);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    authorizedUser,
+                    null,
+                    authorizedUser.getAuthorities()
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception ex) {
+            throw new UnauthorizedException("Invalid Token: " + ex.getMessage());
+        }
 
         filterChain.doFilter(request, response);
     }
@@ -55,7 +66,7 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
         String method = request.getMethod();
 
         return path.startsWith("/login") ||
-                (path.equals("/exams/available") && "GET".equalsIgnoreCase(method)) ||
+                (path.startsWith("/exams/") && "GET".equalsIgnoreCase(method)) ||
                 (path.equals("/bookings") && "POST".equalsIgnoreCase(method));
     }
 

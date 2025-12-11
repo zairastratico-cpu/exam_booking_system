@@ -3,7 +3,8 @@ package zairastratico.be_exam_booking_system.controllers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import zairastratico.be_exam_booking_system.entities.User;
 import zairastratico.be_exam_booking_system.payloads.*;
@@ -18,58 +19,48 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponseDTO createUser(@RequestBody @Valid UserRegistrationDTO payload) {
         return userService.createUser(payload);
     }
 
     @GetMapping("/me")
-    public UserResponseDTO getMyProfile() {
-        String userIdStr = (String) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-        Long userId = Long.parseLong(userIdStr);
-        User user = userService.findUserById(userId);
-
-        return userService.getMyProfile(user);
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponseDTO getMyProfile(@AuthenticationPrincipal User authorizedUser) {
+        return userService.getMyProfile(authorizedUser);
     }
 
     @PutMapping("/me")
-    public UserUpdateResponseDTO updateMyProfile(@RequestBody @Valid UserUpdateDTO payload) {
-        String userIdStr = (String) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserUpdateResponseDTO updateMyProfile(@AuthenticationPrincipal User authorizedUser, @RequestBody @Valid UserUpdateDTO payload) {
 
-        Long userId = Long.parseLong(userIdStr);
+        Long userId = authorizedUser.getId();
 
         return userService.updateUser(userId, payload);
     }
 
     @PatchMapping("/me/password")
-    @ResponseStatus(HttpStatus.NO_CONTENT)  // 204
-    public void updateMyPassword(@RequestBody @Valid UserPswUpdateDTO payload) {
-        String userIdStr = (String) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMyPassword(@AuthenticationPrincipal User authorizedUser, @RequestBody @Valid UserPswUpdateDTO payload) {
 
-        Long userId = Long.parseLong(userIdStr);
+        Long userId = authorizedUser.getId();
 
         userService.updatePassword(userId, payload);
     }
 
     @DeleteMapping("/me")
-    @ResponseStatus(HttpStatus.NO_CONTENT)  // 204
-    public void deleteMyProfile() {
-        String userIdStr = (String) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMyProfile(@AuthenticationPrincipal User authorizedUser) {
 
-        Long userId = Long.parseLong(userIdStr);
+        Long userId = authorizedUser.getId();
 
         userService.deleteUser(userId);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponseDTO getUserById(@PathVariable Long id) {
         User user = userService.findUserById(id);
         return userService.getMyProfile(user);
