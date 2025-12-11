@@ -56,16 +56,22 @@ public class Exam {
     @Column(nullable = false)
     private Status status= Status.DISPONIBILE;
 
+    @Column(nullable = false)
+    private boolean forceVisibility = false;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User admin;
 
-    public Exam(String name, LocalDate date, TimeSlot timeSlot, LocalTime time, Integer maxNumb, User admin) {
+    public Exam(String name, LocalDate date, TimeSlot timeSlot, LocalTime time, Integer maxNumb, boolean forceVisibility, User admin) {
         this.name = name;
         this.date = date;
         this.timeSlot = timeSlot;
         this.time = time;
         this.maxNumb = maxNumb;
+        this.availableNumb = maxNumb;
+        this.status = Status.DISPONIBILE;
+        this.forceVisibility = forceVisibility;
         this.admin = admin;
     }
 }

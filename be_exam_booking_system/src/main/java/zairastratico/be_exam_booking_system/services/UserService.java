@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 import zairastratico.be_exam_booking_system.entities.User;
 import zairastratico.be_exam_booking_system.exceptions.BadRequestException;
 import zairastratico.be_exam_booking_system.exceptions.NotFoundException;
-import zairastratico.be_exam_booking_system.payloads.UserPswUpdateDTO;
-import zairastratico.be_exam_booking_system.payloads.UserResponseDTO;
-import zairastratico.be_exam_booking_system.payloads.UserUpdateDTO;
+import zairastratico.be_exam_booking_system.payloads.*;
 import zairastratico.be_exam_booking_system.repositories.UserRepository;
 
 @Slf4j
@@ -32,28 +30,49 @@ public class UserService {
 
     public UserResponseDTO getMyProfile(User user) {
         return new UserResponseDTO(
-                user.getName(), user.getEmail(), user.getPassword()
+                user.getName(), user.getEmail()
         );
     }
 
-    public User updateUser(Long id, UserUpdateDTO payload) {
+    public UserResponseDTO createUser(UserRegistrationDTO payload) {
+        if (userRepository.existsByEmail(payload.email())) {
+            throw new BadRequestException("Email already exists");
+        }
 
-        userRepository.findByEmailIgnoreCase(payload.email())
-                .filter(existingPublicUser -> !existingPublicUser.getId().equals(id))
-                .ifPresent(existingPublicUser -> {
-                    throw new BadRequestException("A user with email " + payload.email() + " already exists in our system");
-                });
+        User user = new User(
+                payload.name(),
+                payload.email(),
+                bCrypt.encode(payload.password())
+        );
 
+        User savedUser = userRepository.save(user);
+        log.info("New admin registered: {}", savedUser.getEmail());
 
+        return new UserResponseDTO(
+                savedUser.getName(),
+                savedUser.getEmail()
+        );
+    }
+
+    public UserUpdateResponseDTO updateUser(Long id, UserUpdateDTO payload) {
         User user = findUserById(id);
+
+        if (!user.getEmail().equalsIgnoreCase(payload.email())) {
+            if (userRepository.existsByEmail(payload.email())) {
+                throw new BadRequestException("A user with email " + payload.email() + " already exists in our system");
+            }
+        }
+
         user.setName(payload.name());
         user.setEmail(payload.email());
 
         User updatedUser = userRepository.save(user);
+        log.info("User {} updated", updatedUser.getEmail());
 
-        log.info("User " + user.getEmail() + " has been updated");
-
-        return updatedUser;
+        return new UserUpdateResponseDTO(
+                updatedUser.getName(),
+                updatedUser.getEmail()
+        );
     }
 
 
@@ -68,5 +87,16 @@ public class UserService {
         userRepository.save(user);
 
         log.info("Password updated for user " + user.getEmail());
+    }
+
+    public void deleteUser(Long id) {
+        User user = findUserById(id);
+
+        userRepository.deleteById(id);
+        log.info("User {} deleted", user.getEmail());
+    }
+
+    public boolean userExistsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }
