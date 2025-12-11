@@ -18,7 +18,7 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     Page<Exam> findAll(Pageable pageable);
 
     Page<Exam> findByNameIgnoreCase(String name, Pageable pageable);
-    
+
     Page<Exam> findByTimeSlot(TimeSlot timeSlot, Pageable pageable);
 
     Page<Exam> findByStatus(Status status, Pageable pageable);

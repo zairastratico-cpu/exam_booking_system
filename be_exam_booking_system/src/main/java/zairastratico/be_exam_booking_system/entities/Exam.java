@@ -60,14 +60,12 @@ public class Exam {
     @JoinColumn(name = "user_id", nullable = false)
     private User admin;
 
-    public Exam(String name, LocalDate date, TimeSlot timeSlot, LocalTime time, Integer maxNumb, Integer availableNumb, Status status, User admin) {
+    public Exam(String name, LocalDate date, TimeSlot timeSlot, LocalTime time, Integer maxNumb, User admin) {
         this.name = name;
         this.date = date;
         this.timeSlot = timeSlot;
         this.time = time;
         this.maxNumb = maxNumb;
-        this.availableNumb = availableNumb;
-        this.status = status;
         this.admin = admin;
     }
 }
