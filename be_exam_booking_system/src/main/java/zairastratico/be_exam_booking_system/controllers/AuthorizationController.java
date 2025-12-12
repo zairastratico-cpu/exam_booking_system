@@ -12,7 +12,6 @@ import zairastratico.be_exam_booking_system.services.AuthorizationService;
 import zairastratico.be_exam_booking_system.services.UserService;
 
 @RestController
-@RequestMapping("/auth")
 public class AuthorizationController {
     @Autowired
     public UserService userService;

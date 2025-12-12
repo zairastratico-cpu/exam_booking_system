@@ -1,6 +1,5 @@
 package zairastratico.be_exam_booking_system.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -38,7 +37,8 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(authorized->authorized
                 .requestMatchers("/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/exams/available").permitAll()
-                .requestMatchers(HttpMethod.POST, "/bookings").permitAll()
+                .requestMatchers(HttpMethod.GET, "/exams/available/sorted").permitAll()
+                .requestMatchers(HttpMethod.POST, "/bookings/exam/**").permitAll()
                 .anyRequest().authenticated()
     );
 

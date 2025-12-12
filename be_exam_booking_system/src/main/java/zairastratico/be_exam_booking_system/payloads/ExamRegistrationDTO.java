@@ -26,9 +26,6 @@ public record ExamRegistrationDTO(
         @Min(value = 1, message = "Max number must be at least 1")
         Integer maxNumb,
 
-        boolean forceVisibility,
-
-        @NotNull(message = "Admin ID is required")
-        Long adminId
+        boolean forceVisibility
 ) {
 }

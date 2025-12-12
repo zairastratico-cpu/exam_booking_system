@@ -26,9 +26,6 @@ public record BookingRegistrationDTO(
         String documentNumber,
 
         @NotBlank(message = "Security code is required")
-        String securityCode,
-
-        @NotNull(message = "Exam ID is required")
-        Long examId
+        String securityCode
 ) {
 }

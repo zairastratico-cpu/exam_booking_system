@@ -18,15 +18,16 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
-    @PostMapping
+    @PostMapping("/exam/{examId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public BookingResponseDTO createBooking(@RequestBody @Valid BookingRegistrationDTO payload) {
-        return bookingService.createBooking(payload);
+    public BookingResponseDTO createBooking(@PathVariable Long examId, @RequestBody @Valid BookingRegistrationDTO payload) {
+        return bookingService.createBooking(examId, payload);
     }
 
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Booking> getAllBookings(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -37,12 +38,14 @@ public class BookingController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Booking getBookingById(@PathVariable Long id) {
         return bookingService.findBookingById(id);
     }
 
     @GetMapping("/exam/{examId}")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Booking> getBookingsByExam(
             @PathVariable Long examId,
             @RequestParam(defaultValue = "0") int page,
@@ -54,6 +57,7 @@ public class BookingController {
 
     @GetMapping("/exam/{examId}/sorted")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Booking> getBookingsByExamSorted(
             @PathVariable Long examId,
             @RequestParam(defaultValue = "0") int page,
@@ -64,6 +68,7 @@ public class BookingController {
 
     @GetMapping("/search/email")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Booking> getBookingsByEmail(
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int page,
@@ -75,12 +80,14 @@ public class BookingController {
 
     @GetMapping("/exam/{examId}/count")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public long countBookingsByExam(@PathVariable Long examId) {
         return bookingService.countBookingsByExam(examId);
     }
 
     @GetMapping("/check")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public boolean isAlreadyBooked(
             @RequestParam String email,
             @RequestParam Long examId

@@ -15,6 +15,8 @@ import zairastratico.be_exam_booking_system.payloads.BookingRegistrationDTO;
 import zairastratico.be_exam_booking_system.payloads.BookingResponseDTO;
 import zairastratico.be_exam_booking_system.repositories.BookingRepository;
 
+import java.time.LocalDate;
+
 @Service
 @Slf4j
 public class BookingService {
@@ -59,10 +61,14 @@ public class BookingService {
     }
 
     //CRUD
-    public BookingResponseDTO createBooking(BookingRegistrationDTO payload) {
-        Exam exam = examService.findExamById(payload.examId());
+    public BookingResponseDTO createBooking(Long examId,BookingRegistrationDTO payload) {
+        Exam exam = examService.findExamById(examId);
 
-        if (bookingRepository.existsByEmailAndExamId(payload.email(), payload.examId())) {
+        if (exam.getDate().isBefore(LocalDate.now())) {
+            throw new BadRequestException("The exam date has already passed. Cannot book this exam.");
+        }
+
+        if (bookingRepository.existsByEmailAndExamId(payload.email(), examId)) {
             throw new BadRequestException("You are already booked for this exam");
         }
 
@@ -85,7 +91,7 @@ public class BookingService {
         log.info("Booking created with id: {} for exam: {} by user: {}",
                 savedBooking.getId(), exam.getId(), payload.email());
 
-        examService.decreaseAvailableSeats(payload.examId());
+        examService.decreaseAvailableSeats(examId);
 
         return new BookingResponseDTO(savedBooking.getId());
     }

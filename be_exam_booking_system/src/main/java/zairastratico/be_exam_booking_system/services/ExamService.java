@@ -14,6 +14,7 @@ import zairastratico.be_exam_booking_system.entities.enums.Status;
 import zairastratico.be_exam_booking_system.entities.enums.TimeSlot;
 import zairastratico.be_exam_booking_system.exceptions.BadRequestException;
 import zairastratico.be_exam_booking_system.exceptions.NotFoundException;
+import zairastratico.be_exam_booking_system.exceptions.UnauthorizedException;
 import zairastratico.be_exam_booking_system.payloads.ExamRegistrationDTO;
 import zairastratico.be_exam_booking_system.payloads.ExamResponseDTO;
 import zairastratico.be_exam_booking_system.repositories.ExamRepository;
@@ -107,8 +108,45 @@ public class ExamService {
     }
 
     //CRUD
-    public ExamResponseDTO createExam(ExamRegistrationDTO payload) {
-        User admin = userService.findUserById(payload.adminId());
+
+
+    private void checkDateFuture(LocalDate examDate) {
+        if (examDate.isBefore(LocalDate.now())) {
+            throw new BadRequestException("The exam date cannot be set in the past.");
+        }
+    }
+
+    private void checkTimeSlotConsistency(TimeSlot timeSlot, LocalTime examTime) {
+        int hour = examTime.getHour();
+
+        switch (timeSlot) {
+            case MATTINA:
+                if (hour < 5 || hour > 13) {
+                    throw new BadRequestException("Time Slot inconsistency: MATTINA is defined between 05:00 and 13:59.");
+                }
+                break;
+
+            case POMERIGGIO:
+                if (hour < 14 || hour > 18) {
+                    throw new BadRequestException("Time Slot inconsistency: POMERIGGIO is defined between 14:00 and 18:59.");
+                }
+                break;
+
+            case SERA:
+                if (hour <= 18 || hour > 23) {
+                    throw new BadRequestException("Time Slot inconsistency: SERA is defined between 19:00 and 23:59.");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public ExamResponseDTO createExam(ExamRegistrationDTO payload, User admin) {
+
+        checkDateFuture(payload.date());
+
+        checkTimeSlotConsistency(payload.timeSlot(), payload.time());
 
         Exam exam = new Exam(
                 payload.name(),
@@ -121,14 +159,22 @@ public class ExamService {
         );
 
         Exam savedExam = examRepository.save(exam);
-        log.info("Exam created with id: {} (forceVisibility: {})",
-                savedExam.getId(), savedExam.isForceVisibility());
+        log.info("Exam created with id {}  by admin: {})",
+                savedExam.getId(), admin.getEmail());
 
         return new ExamResponseDTO(savedExam.getId());
     }
 
-    public ExamResponseDTO updateExam(Long id, ExamRegistrationDTO payload) {
+    public ExamResponseDTO updateExam(Long id, ExamRegistrationDTO payload, User admin) {
         Exam exam = findExamById(id);
+
+        checkDateFuture(payload.date());
+
+        checkTimeSlotConsistency(payload.timeSlot(), payload.time());
+
+        if (!exam.getAdmin().getId().equals(admin.getId())) {
+            throw new UnauthorizedException("You can only update your own exams");
+        }
 
         exam.setName(payload.name());
         exam.setDate(payload.date());
@@ -146,7 +192,7 @@ public class ExamService {
         }
 
         Exam updatedExam = examRepository.save(exam);
-        log.info("Exam updated with id: {}", updatedExam.getId());
+        log.info("Exam updated with id: {} by admin: {}", updatedExam.getId(), admin.getEmail());
 
         return new ExamResponseDTO(updatedExam.getId());
     }
@@ -198,4 +244,5 @@ public class ExamService {
         examRepository.save(exam);
         log.info("Toggled forceVisibility for exam {}: {}", examId, exam.isForceVisibility());
     }
+
 }

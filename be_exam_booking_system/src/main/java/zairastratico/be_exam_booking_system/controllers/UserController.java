@@ -25,12 +25,14 @@ public class UserController {
     }
 
     @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponseDTO getMyProfile(@AuthenticationPrincipal User authorizedUser) {
         return userService.getMyProfile(authorizedUser);
     }
 
     @PutMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
     public UserUpdateResponseDTO updateMyProfile(@AuthenticationPrincipal User authorizedUser, @RequestBody @Valid UserUpdateDTO payload) {
 
@@ -41,7 +43,7 @@ public class UserController {
 
     @PatchMapping("/me/password")
     @PreAuthorize("hasRole('ADMIN')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void updateMyPassword(@AuthenticationPrincipal User authorizedUser, @RequestBody @Valid UserPswUpdateDTO payload) {
 
         Long userId = authorizedUser.getId();
@@ -61,6 +63,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public UserResponseDTO getUserById(@PathVariable Long id) {
         User user = userService.findUserById(id);
         return userService.getMyProfile(user);

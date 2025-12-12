@@ -25,11 +25,13 @@ public class ExamController {
     private ExamService examService;
 
     @GetMapping("/available")
+    @ResponseStatus(HttpStatus.OK)
     public List<Exam> getAvailableExams() {
         return examService.getAvailableExamsForUsers();
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Page<Exam> getAllExams(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -39,6 +41,7 @@ public class ExamController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Exam getExamById(@PathVariable Long id) {
         return examService.findExamById(id);
     }
@@ -46,17 +49,19 @@ public class ExamController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public ExamResponseDTO createExam(@RequestBody @Valid ExamRegistrationDTO payload) {
-        return examService.createExam(payload);
+    public ExamResponseDTO createExam(@RequestBody @Valid ExamRegistrationDTO payload, @AuthenticationPrincipal User admin) {
+        return examService.createExam(payload, admin);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public ExamResponseDTO updateExam(
             @PathVariable Long id,
-            @RequestBody @Valid ExamRegistrationDTO payload
+            @RequestBody @Valid ExamRegistrationDTO payload,
+            @AuthenticationPrincipal User admin
     ) {
-        return examService.updateExam(id, payload);
+        return examService.updateExam(id, payload, admin);
     }
 
     @DeleteMapping("/{id}")
@@ -67,6 +72,7 @@ public class ExamController {
     }
 
     @GetMapping("/search/name")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Exam> getExamsByName(
             @RequestParam String name,
             @RequestParam(defaultValue = "0") int page,
@@ -77,6 +83,7 @@ public class ExamController {
     }
 
     @GetMapping("/search/timeslot")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Exam> getExamsByTimeSlot(
             @RequestParam TimeSlot timeSlot,
             @RequestParam(defaultValue = "0") int page,
@@ -88,6 +95,7 @@ public class ExamController {
 
     @GetMapping("/search/status")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Exam> getExamsByStatus(
             @RequestParam Status status,
             @RequestParam(defaultValue = "0") int page,
@@ -99,6 +107,7 @@ public class ExamController {
 
     @GetMapping("/search/admin/{adminId}")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Exam> getExamsByAdmin(
             @PathVariable Long adminId,
             @RequestParam(defaultValue = "0") int page,
@@ -110,6 +119,7 @@ public class ExamController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Exam> getMyExams(
             @AuthenticationPrincipal User authorizedUser,
             @RequestParam(defaultValue = "0") int page,
@@ -123,6 +133,7 @@ public class ExamController {
 
     @GetMapping("/search/daterange")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Exam> getExamsByDateRange(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate,
@@ -134,7 +145,7 @@ public class ExamController {
     }
 
     @GetMapping("/available/sorted")
-    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Exam> getAvailableExamsSorted(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size

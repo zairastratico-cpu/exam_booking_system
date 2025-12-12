@@ -46,6 +46,9 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
 
             User authorizedUser = userService.findUserById(userId);
 
+            System.out.println("User loaded: " + authorizedUser.getEmail());
+            System.out.println("Authorities: " + authorizedUser.getAuthorities());
+
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     authorizedUser,
                     null,
@@ -66,8 +69,9 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
         String method = request.getMethod();
 
         return path.startsWith("/login") ||
-                (path.startsWith("/exams/") && "GET".equalsIgnoreCase(method)) ||
-                (path.equals("/bookings") && "POST".equalsIgnoreCase(method));
+                (path.startsWith("/exams/available") && "GET".equalsIgnoreCase(method)) ||
+                (path.startsWith("/exams/available/sorted?") && "GET".equalsIgnoreCase(method)) ||
+                (path.equals("/bookings/exam/") && "POST".equalsIgnoreCase(method));
     }
 
 }
