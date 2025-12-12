@@ -36,9 +36,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public UserUpdateResponseDTO updateMyProfile(@AuthenticationPrincipal User authorizedUser, @RequestBody @Valid UserUpdateDTO payload) {
 
-        Long userId = authorizedUser.getId();
-
-        return userService.updateUser(userId, payload);
+        return userService.updateUser(authorizedUser, payload);
     }
 
     @PatchMapping("/me/password")
@@ -46,9 +44,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void updateMyPassword(@AuthenticationPrincipal User authorizedUser, @RequestBody @Valid UserPswUpdateDTO payload) {
 
-        Long userId = authorizedUser.getId();
-
-        userService.updatePassword(userId, payload);
+        userService.updatePassword(authorizedUser, payload);
     }
 
     @DeleteMapping("/me")
@@ -56,9 +52,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMyProfile(@AuthenticationPrincipal User authorizedUser) {
 
-        Long userId = authorizedUser.getId();
-
-        userService.deleteUser(userId);
+        userService.deleteUser(authorizedUser);
     }
 
     @GetMapping("/{id}")

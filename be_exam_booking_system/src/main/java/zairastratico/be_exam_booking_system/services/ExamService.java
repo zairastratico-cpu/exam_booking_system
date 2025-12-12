@@ -17,6 +17,7 @@ import zairastratico.be_exam_booking_system.exceptions.NotFoundException;
 import zairastratico.be_exam_booking_system.exceptions.UnauthorizedException;
 import zairastratico.be_exam_booking_system.payloads.ExamRegistrationDTO;
 import zairastratico.be_exam_booking_system.payloads.ExamResponseDTO;
+import zairastratico.be_exam_booking_system.payloads.ExamUpdateDTO;
 import zairastratico.be_exam_booking_system.repositories.ExamRepository;
 
 import java.time.LocalDate;
@@ -29,12 +30,6 @@ public class ExamService {
 
     @Autowired
     private ExamRepository examRepository;
-
-    @Autowired
-    private AuthorizationService authService;
-
-    @Autowired
-    private UserService userService;
 
     //find
 
@@ -133,7 +128,7 @@ public class ExamService {
                 break;
 
             case SERA:
-                if (hour <= 18 || hour > 23) {
+                if (hour < 19 || hour > 22) {
                     throw new BadRequestException("Time Slot inconsistency: SERA is defined between 19:00 and 23:59.");
                 }
                 break;
@@ -165,25 +160,60 @@ public class ExamService {
         return new ExamResponseDTO(savedExam.getId());
     }
 
-    public ExamResponseDTO updateExam(Long id, ExamRegistrationDTO payload, User admin) {
+    public ExamResponseDTO updateExam(Long id, ExamUpdateDTO payload, User admin) {
         Exam exam = findExamById(id);
-
-        checkDateFuture(payload.date());
-
-        checkTimeSlotConsistency(payload.timeSlot(), payload.time());
 
         if (!exam.getAdmin().getId().equals(admin.getId())) {
             throw new UnauthorizedException("You can only update your own exams");
         }
 
-        exam.setName(payload.name());
-        exam.setDate(payload.date());
-        exam.setTimeSlot(payload.timeSlot());
-        exam.setTime(payload.time());
-        exam.setMaxNumb(payload.maxNumb());
+        boolean maxNumbChanged = false;
+        Integer oldMaxNumb = exam.getMaxNumb();
 
-        int bookedCount = exam.getMaxNumb() - exam.getAvailableNumb();
-        exam.setAvailableNumb(payload.maxNumb() - bookedCount);
+        if (payload.name() != null && !payload.name().isBlank()) {
+            exam.setName(payload.name());
+        }
+
+        if (payload.date() != null) {
+            checkDateFuture(payload.date());
+            exam.setDate(payload.date());
+        }
+
+        if (payload.timeSlot() != null) {
+            LocalTime timeToValidate = payload.time() != null ? payload.time() : exam.getTime();
+            checkTimeSlotConsistency(payload.timeSlot(), timeToValidate);
+            exam.setTimeSlot(payload.timeSlot());
+        }
+
+        if (payload.time() != null) {
+            TimeSlot timeSlotToValidate = payload.timeSlot() != null ? payload.timeSlot() : exam.getTimeSlot();
+            checkTimeSlotConsistency(timeSlotToValidate, payload.time());
+            exam.setTime(payload.time());
+        }
+
+        if (payload.maxNumb() != null) {
+            exam.setMaxNumb(payload.maxNumb());
+            maxNumbChanged = true;
+        }
+
+        if (payload.forceVisibility() != null) {
+            exam.setForceVisibility(payload.forceVisibility());
+        }
+
+        if (maxNumbChanged) {
+            int bookedCount = oldMaxNumb - exam.getAvailableNumb();
+            int newAvailableNumb = exam.getMaxNumb() - bookedCount;
+
+            if (newAvailableNumb < 0) {
+                throw new BadRequestException(
+                        "Cannot reduce max seats below current bookings. " +
+                                "Current bookings: " + bookedCount + ", " +
+                                "New max seats: " + exam.getMaxNumb()
+                );
+            }
+
+            exam.setAvailableNumb(newAvailableNumb);
+        }
 
         if (exam.getAvailableNumb() <= 0) {
             exam.setStatus(Status.COMPLETO);
@@ -192,7 +222,7 @@ public class ExamService {
         }
 
         Exam updatedExam = examRepository.save(exam);
-        log.info("Exam updated with id: {} by admin: {}", updatedExam.getId(), admin.getEmail());
+        log.info("Exam {} updated by admin {}", updatedExam.getId(), admin.getEmail());
 
         return new ExamResponseDTO(updatedExam.getId());
     }

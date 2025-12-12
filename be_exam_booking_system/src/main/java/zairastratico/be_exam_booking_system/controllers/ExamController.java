@@ -13,6 +13,7 @@ import zairastratico.be_exam_booking_system.entities.enums.Status;
 import zairastratico.be_exam_booking_system.entities.enums.TimeSlot;
 import zairastratico.be_exam_booking_system.payloads.ExamRegistrationDTO;
 import zairastratico.be_exam_booking_system.payloads.ExamResponseDTO;
+import zairastratico.be_exam_booking_system.payloads.ExamUpdateDTO;
 import zairastratico.be_exam_booking_system.services.ExamService;
 
 import java.time.LocalDate;
@@ -58,7 +59,7 @@ public class ExamController {
     @ResponseStatus(HttpStatus.OK)
     public ExamResponseDTO updateExam(
             @PathVariable Long id,
-            @RequestBody @Valid ExamRegistrationDTO payload,
+            @RequestBody @Valid ExamUpdateDTO payload,
             @AuthenticationPrincipal User admin
     ) {
         return examService.updateExam(id, payload, admin);

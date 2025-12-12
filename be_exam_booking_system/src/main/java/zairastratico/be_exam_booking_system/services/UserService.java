@@ -54,17 +54,20 @@ public class UserService {
         );
     }
 
-    public UserUpdateResponseDTO updateUser(Long id, UserUpdateDTO payload) {
-        User user = findUserById(id);
+    public UserUpdateResponseDTO updateUser(User user, UserUpdateDTO payload) {
 
-        if (!user.getEmail().equalsIgnoreCase(payload.email())) {
-            if (userRepository.existsByEmail(payload.email())) {
-                throw new BadRequestException("A user with email " + payload.email() + " already exists in our system");
-            }
+        if (payload.name() != null && !payload.name().isBlank()) {
+            user.setName(payload.name());
         }
 
-        user.setName(payload.name());
-        user.setEmail(payload.email());
+        if (payload.email() != null && !payload.email().isBlank()) {
+            if (!user.getEmail().equalsIgnoreCase(payload.email())) {
+                if (userRepository.existsByEmail(payload.email())) {
+                    throw new BadRequestException("A user with email " + payload.email() + " already exists in our system");
+                }
+            }
+            user.setEmail(payload.email());
+        }
 
         User updatedUser = userRepository.save(user);
         log.info("User {} updated", updatedUser.getEmail());
@@ -76,8 +79,7 @@ public class UserService {
     }
 
 
-    public void updatePassword(Long userId, UserPswUpdateDTO payload) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    public void updatePassword(User user, UserPswUpdateDTO payload) {
 
         if (!bCrypt.matches(payload.oldPassword(), user.getPassword())) {
             throw new BadRequestException("Old password is incorrect");
@@ -89,10 +91,9 @@ public class UserService {
         log.info("Password updated for user " + user.getEmail());
     }
 
-    public void deleteUser(Long id) {
-        User user = findUserById(id);
+    public void deleteUser(User user) {
 
-        userRepository.deleteById(id);
+        userRepository.delete(user);
         log.info("User {} deleted", user.getEmail());
     }
 

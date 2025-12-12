@@ -2,8 +2,6 @@ package zairastratico.be_exam_booking_system.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,12 +24,9 @@ public class User implements UserDetails {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @NotBlank(message = "Name is required")
     @Column(nullable = false)
     private String name;
 
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is required")
     @Column(nullable = false, unique = true)
     private String email;
 

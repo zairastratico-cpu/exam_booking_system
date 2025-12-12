@@ -2,9 +2,6 @@ package zairastratico.be_exam_booking_system.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import zairastratico.be_exam_booking_system.entities.enums.Status;
 import zairastratico.be_exam_booking_system.entities.enums.TimeSlot;
@@ -26,11 +23,9 @@ public class Exam {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @NotBlank(message = "Exam name is required")
     @Column(nullable = false)
     private String name;
 
-    @NotNull(message = "Date is required")
     @Column(nullable = false)
     private LocalDate date;
 
@@ -38,17 +33,12 @@ public class Exam {
     @Column(nullable = false)
     private TimeSlot timeSlot;
 
-    @NotNull(message = "Time is required")
     @Column(nullable = false)
     private LocalTime time;
 
-    @NotNull(message = "Max number is required")
-    @Min(value = 1, message = "Max number must be at least 1")
     @Column(nullable = false)
     private Integer maxNumb;
 
-    @NotNull(message = "Available numb is required")
-    @Min(value = 0, message = "Available numb cannot be negative")
     @Column(nullable = false)
     private Integer availableNumb;
 

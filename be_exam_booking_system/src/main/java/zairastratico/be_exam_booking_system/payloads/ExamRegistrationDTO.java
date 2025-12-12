@@ -26,6 +26,6 @@ public record ExamRegistrationDTO(
         @Min(value = 1, message = "Max number must be at least 1")
         Integer maxNumb,
 
-        boolean forceVisibility
+        Boolean forceVisibility
 ) {
 }

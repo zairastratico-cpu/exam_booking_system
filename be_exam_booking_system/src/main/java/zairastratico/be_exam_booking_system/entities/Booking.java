@@ -25,33 +25,25 @@ public class Booking {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @NotBlank(message = "Name is required")
     @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "Surname is required")
     @Column(nullable = false)
     private String surname;
 
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is required")
     @Column(nullable = false)
     private String email;
 
-    @NotBlank(message = "Phone is required")
     @Column(nullable = false)
     private String phone;
 
-    @NotNull(message = "Document type is required")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DocumentType documentType;
 
-    @NotBlank(message = "Document number is required")
     @Column(nullable = false)
     private String documentNumber;
 
-    @NotBlank(message = "Security code is required")
     @Column(nullable = false)
     private String securityCode;
 
