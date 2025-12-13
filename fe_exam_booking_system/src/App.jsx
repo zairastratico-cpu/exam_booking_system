@@ -1,10 +1,14 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
-import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+// Components
+import BookNavbar from "./components/BookNavbar";
+import BookFooter from "./components/BookFooter";
+
+// Pages
+import Homepage from "./pages/public/Homepage";
 import API_URL from "./config/api";
 
 function App() {
@@ -12,9 +16,13 @@ function App() {
 
   return (
     <BrowserRouter>
-    <Routes>
-      <Route></Route>
-    </Routes>
+      <BookNavbar />
+      <Routes>
+        <Route>
+          <Route path="/" element={<Homepage />} />
+        </Route>
+      </Routes>
+      <BookFooter />
     </BrowserRouter>
   );
 }

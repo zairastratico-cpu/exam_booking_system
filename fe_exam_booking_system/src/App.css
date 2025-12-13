@@ -1,42 +1,183 @@
+/* ===================================
+   CERTICOD - EXAM BOOKING SYSTEM
+   Main Stylesheet
+=================================== */
+
+/* --- Variables --- */
+:root {
+  --primary-blue: #090a89;
+  --success-green: #198754;
+  --text-dark: #333;
+  --text-muted: #6c757d;
+  --border-gray: #dee2e6;
+}
+
+/* --- Global --- */
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* ===================================
+   NAVBAR - BIANCO con bordo grigio
+=================================== */
+.navbar-custom {
+  height: 6rem;
+  background-color: white;
+  border-bottom: 1px solid var(--border-gray);
+}
+
+/* ===================================
+   FOOTER - BLU
+=================================== */
+.footer-custom {
+  background: var(--primary-blue);
+  color: white;
+  margin-top: auto;
+}
+
+.footer-logo {
+  max-width: 13rem;
+  height: auto;
+}
+
+.footer-title {
+  color: white;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #117044;
+}
+
+.btn-phone {
+  background-color: var(--success-green);
+  color: white;
+  border-radius: 20px;
+  padding: 8px 20px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-phone:hover {
+  background-color: #117044;
+  color: white;
+}
+
+/* ===================================
+   BUTTONS
+=================================== */
+.btn-custom {
+  border-radius: 5px;
+  font-weight: 500;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-custom:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-blue-dark);
+  border-color: var(--primary-blue-dark);
+}
+
+.btn-success {
+  background-color: var(--success-green);
+  border-color: var(--success-green);
+}
+
+/* ===================================
+   DROPDOWN
+=================================== */
+.section {
+  background-color: #f0f8ff;
+  height: 4rem;
+}
+
+.drop .btn-light {
+  background-color: white !important;
+  border: 2px solid var(--text-dark) !important;
+  color: var(--text-dark) !important;
+}
+
+.drop .dropdown-menu {
+  background-color: white !important;
+  border: 2px solid var(--border-gray) !important;
+}
+
+.drop .dropdown-item {
+  color: var(--text-dark) !important;
+}
+
+/* ===================================
+   FILTER BAR
+=================================== */
+.filter-bar {
+  background-color: #f8f9fa;
+  padding: 1rem 0;
+}
+
+/* ===================================
+   SESSIONS TABLE
+=================================== */
+.sessions-table {
+  margin-top: 2rem;
+}
+
+.sessions-table th {
+  background-color: transparent;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.sessions-table td {
+  vertical-align: middle;
+}
+
+.sessions-table tbody tr {
+  background-color: #f0f4f8;
+}
+
+.sessions-table tbody tr:hover {
+  background-color: #e2e8f0;
+}
+
+/* ===================================
+   RESPONSIVE
+=================================== */
+@media (max-width: 768px) {
+  .footer-custom {
+    text-align: center;
   }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
